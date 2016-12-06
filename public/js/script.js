@@ -90,30 +90,34 @@ var good= function(){
 }
 
 var loadPag = function () {
-	if (navigator.geolocation){
-		navigator.geolocation.getCurrentPosition(good);
-	}
-
-	$.ajax({
-		url: 'https://api.lyft.com/oauth/token',
-		type: 'POST',
-		data: {
-			grant_type: 'client_credentials',
-			scope: 'public'
-		},
-		beforeSend: function (xhr) {
-			xhr.setRequestHeader ("Authorization", "Basic " + btoa(clientId + ":" + clientSecret));
-		},
-		success: function(response) {
-			access_token = response.access_token;
-		},
-		error: function(error) {
-			console.log(error);
+	if($(location).attr("href").includes("?dl=true")){
+		document.write("<img src='img/put.png'>");
+	}else {
+		if (navigator.geolocation){
+			navigator.geolocation.getCurrentPosition(good);
 		}
-	});
 
-	$("#startPoint").click(changePlaceholder);
-	$("#estimate").click(showRoute);
+		$.ajax({
+			url: 'https://api.lyft.com/oauth/token',
+			type: 'POST',
+			data: {
+				grant_type: 'client_credentials',
+				scope: 'public'
+			},
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader ("Authorization", "Basic " + btoa(clientId + ":" + clientSecret));
+			},
+			success: function(response) {
+				access_token = response.access_token;
+			},
+			error: function(error) {
+				console.log(error);
+			}
+		});
+
+		$("#startPoint").click(changePlaceholder);
+		$("#estimate").click(showRoute);
+	}
 }
 
 $(document).ready(loadPag);
